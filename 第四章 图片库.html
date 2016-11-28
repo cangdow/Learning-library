@@ -1,0 +1,40 @@
+<html>
+<head>
+	<title>第四章 案例研究 javascript图片库</title>
+</head>
+<body>
+	<h1>Snapshots</h1>
+	<ul>
+		<li><a href="img/1.jpg" title="a" onclick="showPic(this);return false">a</a></li>
+		<li><a href="img/2.jpg" title="b" onclick="showPic(this);return false">b</a></li>
+		<li><a href="img/3.jpg" title="c" onclick="showPic(this);return false">c</a></li>
+		<li><a href="img/4.jpg" title="d" onclick="showPic(this);return false">d</a></li>
+		<li><a href="img/5.jpg" title="e" onclick="showPic(this);return false">e</a></li>
+		<li><a href="img/6.jpg" title="f" onclick="showPic(this);return false">f</a></li>
+		<li><a href="img/7.jpg" title="g" onclick="showPic(this);return false">g</a></li>
+		<li><a href="img/8.jpg" title="h" onclick="showPic(this);return false">h</a></li>
+	</ul>
+	<p id="description">这是图片描述</p>
+	<img id="placeholder" src="img/1.jpg" alt="my" >
+</body>
+<script type="text/javascript">
+
+	function showPic(whichpic){
+		//获取 href 属性的链接
+		var source=whichpic.getAttribute("href");
+		//获取占位符
+		var placeholder=document.getElementById("placeholder");
+		//把获取 href 属性的链接给到占位符的 src 
+		placeholder.setAttribute("src",source);
+		//获取 litile 属性的值
+		var text=whichpic.getAttribute("title");
+		//获取 p 元素
+		var description=document.getElementById("description");
+		//把获取的 litile 属性的值给到 p 元素的文本节点
+		description.firstChild.nodeValue=text;
+
+		
+	}
+	
+</script>
+</html>
