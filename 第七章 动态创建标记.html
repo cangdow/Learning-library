@@ -1,0 +1,133 @@
+<html>
+<head>
+	<title>第七章 动态创建标记 优化图片库</title>
+</head>
+<body>
+	<h1>Snapshots</h1>
+	<ul id="imagegallery">
+		<li><a href="img/1.jpg" title="a" >a</a></li>
+		<li><a href="img/2.jpg" title="b" >b</a></li>
+		<li><a href="img/3.jpg" title="c" >c</a></li>
+		<li><a href="img/4.jpg" title="d" >d</a></li>
+		<li><a href="img/5.jpg" title="e" >e</a></li>
+		<li><a href="img/6.jpg" title="f" >f</a></li>
+		<li><a href="img/7.jpg" title="g" >g</a></li>
+		<li><a href="img/8.jpg" title="h" >h</a></li>
+	</ul>
+	
+</body>
+
+<script type="text/javascript">
+	function addloadEvent(func){
+		//将现有的事件处理函数的值存入变量中
+		var oldonload =window.onload;	
+		//如果这个事件处理函数没有绑定任何函数，就把新函数添加给它
+		if(typeof window.onload!="function"){
+			window.onload=func;
+		}else{
+		//如果已经绑定了函数，就把新函数追加到现有指令的末尾
+			window.onload=function(){
+				oldonload();
+				func();
+			}
+		}
+	}
+
+	function insertAfter (newElement,targetElement) {
+		//把被插入的元素的父元素存进一个变量里
+		var parent=targetElement.parentNode;
+		//如果这个父元素的最后一个元素==被插入的元素，就添加上去
+		if (parent.lastChild==targetElement) {
+			parent.appendChild(newElement);
+		}else{
+		//如果不是，则插入在目标元素的下一个兄弟节点 的前面。也就是目标元素的后面 
+			parent.insertBefore(newElement,targetElement.nextSibling)
+		}
+	}
+
+	function prearePlaceholder(){
+		//if语句均为测试是否存在
+		if (!document.createElement)return false; 
+		if (!document.createTextNode)return false; 
+		if (!document.getElementById)return false; 
+		if (!document.getElementById("imagegallery"))return false; 
+		//创建一个img元素
+		var placeholder=document.createElement("img");
+		//为img元素添加id属性
+		placeholder.setAttribute("id","placeholder");
+		//为img元素添加alt属性
+		placeholder.setAttribute("alt","my imgae gallery");
+		//创建一个p元素
+		var description=document.createElement("p");
+		//为p元素添加id属性
+		description.setAttribute("id","description");
+		//创建一个文本节点
+		var desctxt=document.createTextNode("这是图片描述语句");
+		//添加到p元素中
+		description.appendChild(desctxt);
+		//获取ul列表
+		var gallery=document.getElementById("imagegallery");
+		//添加到这个列表后边
+		insertAfter(placeholder,gallery);
+		//添加到img元素后边
+		insertAfter(description,placeholder);
+	}
+
+
+
+
+	function prepareGallery(){
+		// 三个if都是测试 是否存在
+		if (!document.getElementById)return false; 
+		if (!document.getElementsByTagName)return false; 
+		if (!document.getElementById("imagegallery"))return false; 
+		//获取ul列表
+		var gallery=document.getElementById("imagegallery");
+		//获取ul列表里面的a元素
+		var links=gallery.getElementsByTagName("a");
+		//遍历所有的a元素，并添加点击事件
+		for (var i = 0; i < links.length; i++) {
+			links[i].onclick=function(){
+				//测试，有showpic()则阻止a元素默认行为，无则不阻止
+				return showPic(this)?false:true;
+			}
+			//把点击事件的行为方法同样给到键盘事件	
+			links[i].onkeypress=links[i].onclick
+		}
+	}
+	prepareGallery();
+
+	function showPic(whichpic){
+		//测试是否存在
+		if (!document.getElementById("placeholder")) return false;
+		//获取 href 属性的链接
+		var source=whichpic.getAttribute("href");
+		//获取占位符
+		var placeholder=document.getElementById("placeholder");
+		//测试是否存在	
+		if(placeholder.nodeName!="IMG")return false;
+		//把获取 href 属性的链接给到占位符的 src 
+		placeholder.setAttribute("src",source);
+		
+		//测试是否存在
+		if (document.getElementById("description")){
+			//三元操作符，判断，有选择前者，无选择后者，获取的值给到text
+			var text=whichpic.getAttribute("title")?whichpic.getAttribute("title"):"";
+			//获取 p 元素
+			var description=document.getElementById("description");
+			//判断节点是否等于3（文本节点）
+			if(description.firstChild.nodeType==3){
+				//把获取的 litile 属性的值给到 p 元素的文本节点
+				description.firstChild.nodeValue=text;
+			}		
+		}return true;		
+	}
+	addloadEvent(prearePlaceholder);
+	addloadEvent(prepareGallery);
+	
+	/*
+	 	
+
+	*/
+</script>
+</html>
