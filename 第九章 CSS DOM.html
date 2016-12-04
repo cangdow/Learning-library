@@ -1,0 +1,196 @@
+<html>
+<head>
+	<title>Cities</title>
+<style type="text/css">
+table{ border:1px solid #000;}
+th{ background-color:#CCC;}
+tr,td{ width:10em; padding:.5em;}
+.even{ background-color:#CCC;}
+.odd{ background-color:#ffc;}
+
+/*
+.intro{font-weight: bold;font-size: 1.2em;}
+*/
+</style>
+</head>
+
+<body>
+	<h1>Man bites dog</h1>
+	<p>This is not a true story</p>
+    <table>
+        <caption>Itinerary</caption>
+        <thead>
+           <tr><th>When</th><th>Where</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>June 9th</td><td>Portland,<abbr title=‘Oregon‘>OR</abbr></td></tr>
+            <tr><td>June 10th</td><td>Seattle,<abbr title=‘Washington‘>WA</abbr></td></tr>
+            <tr><td>June 12th</td><td>Sacrmento,<abbr title=‘California‘>CA</abbr></td></tr>
+        </tbody>
+    </table>
+
+</body>
+<script>
+  	function addLoadEvent(func){
+		var oldonload =window.onload;	
+		if(typeof window.onload!="function"){
+			window.onload=func;
+		}else{
+			window.onload=function(){
+				oldonload();
+				func();
+			}
+		}
+	}
+
+  function stripeTable(){
+    var tables=document.getElementsByTagName("table");
+    var odd;
+    for(var i=0;i<tables.length;i++){
+　　　　 odd = false;
+        var rows=tables[i].getElementsByTagName('tr');
+        for(var j=0;j<rows.length;j++){
+            if(odd == true){
+                rows[j].className="even";
+                odd = false;
+            }else{
+                rows[j].className="odd";
+                odd = true;
+            }
+        }
+    }
+  }
+  /* 
+  	用javascript为表格奇数行设置背景样式，下面为代码解析：
+		1、if (!document.getElementsByTagName) return false;    这句是测试一下浏览器是否支持【document.getElementsByTagName】这个方法，不支持就退出函数。
+
+		2、 var tables = document.getElementsByTagName("table");    查找页面内的table标签，赋值给tables变量
+
+		3、 for (var i=0; i<tables.length; i++) {  页面中可能不只一个table，就循环 tables 中的所有table
+
+		4、var odd = false;  建立临时的表格行数奇偶识别变量
+
+		5、 var rows = tables[i].getElementsByTagName("tr");   取出 table 中的 tr 元素
+
+		6、for (var j=0; j<rows.length; j++) {   对 取出的多个tr进行循环
+
+		7、if (odd == true) {  判断是否是奇数行
+
+		8、rows[j].style.backgroundColor = "#ffc";   如果此行是奇数，则将背景设置为 #ffc 颜色
+
+		9、odd = false;   将 odd赋值为false，以便进行下一次循环识别
+
+		10、else {  odd = true;    这里比较绕，如果odd不是true，则设置为true，那么下一次循环，就会进行设置背景色的步骤，然后再设置为false，下次再设置为true，如此反复。
+
+		这个函数做为学习研究很好，真实使用中不用那么麻烦的，现在用css就可以很好的解决这个表格间隔色的问题。
+		只需要这么2行css，即可实现表格间隔色
+		table tr:nth-child(odd){background:#ffc;}
+
+		table td:nth-child(even){color:#fff;}
+	*/
+	function highlightRows(){
+		if (!document.getElementsByTagName)return false;
+		var rows=document.getElementsByTagName("tr");
+		for (var i = 0; i < rows.length; i++) {
+			rows[i].onmouseover=function(){
+				//在css里是fot-weight，但在js里-会被认为减号，所以在js里一律采用驼峰式。及下个单词首字母大写
+				this.style.fontWeight="bold";
+			}
+
+			rows[i].onmouseout=function(){
+				this.style.fontWeight="normal";
+			}
+		};
+	}
+
+	/* 
+		使用css可以更加简洁 tr:hover{font-weight:bold;}
+
+	*/
+	function getNextElement(node){
+		if (node.nodeType==1) {
+			return node;
+		}
+		if (node.nextSibling) {
+			return getNextElement(node.nextSibling);
+		}
+		return null;
+	}
+	/*
+	这里有两个if语句：
+		第一个：表示如果传入的node是元素节点的话，那么直接返回node，后面的那两
+		句都不用执行了。
+		第二个：如果传入的不是元素节点（这里其实是文本节点），就执行下面的代码。
+		如果存在当前传入节点的下一个节点，那么将这一下一个节点返回，重新调用函
+		数，这里的node.nextSibling相当于第一步中的node，然后在判断。
+	最后上面两个if语句按顺序执行，有一个成功，就不往下执行，若都不成立，执行return nll，表示不存在该节点的下一个节点。
+
+
+
+	*/
+
+	function styleHeadrSiblings(){
+		if (!document.getElementsByTagName)return false;
+		var headers=document.getElementsByTagName("h1");
+		var elem;
+		for (var i = 0; i < headers.length; i++) {
+			elem = getNextElement(headers[i].nextSibling); 
+			//第一种方法
+			elem .style.fontWeight="bold";
+			elem .style.fontSize="1.2em";
+
+			/*第二种方法，取消css样式.intro 的注释，使用setAttribute
+			elem.setAttribute("class","intro");
+			 
+			  第三种方法，取消css样式.intro 的注释,使用className
+			elem.className="intro"
+			*/
+		};
+	}
+
+	/*
+	  styleHeadrSiblings()这个函数，如果使用第三种方法，有个不足。
+	  通过classNmae属性设置的某个元素的的clss属性时将替换，而不是
+	  追加该元素原有的class设置。
+	  
+	  在需要给一个元素追加新的class时，你可以按照以下步骤。
+	  1.检查className 属性值是否为null。
+	  2.如果是，把新的class设置值直接赋值给className。
+	  3.如果不是，把一个空格和新的class设置值追加到className属性上去。
+      
+	  这个函数两个参数，第一个是需要添加的新class元素（element）；
+	  					第二个是新的class设置值（value）。
+
+	function addClass(element,value){
+		if (!element.className) {
+			element.className=value;
+		}else{
+			newClassName=element.className;
+			newClassName+=" ";
+			newClassName+=value;
+			element.className=newClassName;
+		}
+	}
+	上面的第三种方法，elem.className="intro"，可以更改为addClass(elem,"intro")。
+
+
+	函数抽象：
+	function styleHeadrSiblings(tag，theclass){
+		if (!document.getElementsByTagName)return false;
+    var headers=document.getElementsByTagName("tag");
+    var elem;
+    for (var i = 0; i < headers.length; i++) {
+        elem = getNextElement(headers[i].nextSibling); 
+        addClass（elem，theclass）;
+    };
+}
+	*/
+	
+
+
+
+  addLoadEvent(styleHeadrSiblings);
+  addLoadEvent(stripeTable);
+  addLoadEvent(highlightRows);
+  </script>
+</html>

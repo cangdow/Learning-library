@@ -1,0 +1,118 @@
+<html>
+<head>
+	<title>用javascript实现动画效果</title>
+</head>
+<body>
+	<p id="message">Una Mattin</p>
+
+</body>
+<script type="text/javascript">
+
+function addLoadEvent(func){
+		var oldonload =window.onload;	
+		if(typeof window.onload!="function"){
+			window.onload=func;
+		}else{
+			window.onload=function(){
+				oldonload();
+				func();
+			}
+		}
+	}
+
+	function positionMessage() {
+		//检测
+		if (!document.getElementById)return false;
+		if (!document.getElementById("message"))return false;
+		//获取并添加样式
+		var elem=document.getElementById("message");
+		elem.style.position="absolute";
+		elem.style.left="50px";
+		elem.style.top="100px";
+		//相隔2秒执行moveMessage函数.....
+		//在2秒钟的时间里，随时可以clearTimeout(movement)取消这一跳跃行
+	//  movement=setTimeout("moveMessage()",2000);
+
+		//调用 moveElement
+	   moveElement('message',200,20,20);
+
+	}
+	/*
+		movement变量对应着在positionMessage函数里定义的setTimeout调用。
+		它并没有用var 声明，是一个全局变量。
+		这意味着那个“跳跃”行为可以在positionMessage函数以外的地方被取消。
+
+	*/
+
+
+    //实现渐变的动画
+	function moveMessage(){
+		//检测
+		if (!document.getElementById)return false;
+		if (!document.getElementById("message"))return false;
+		//获取并添加样式
+		var elem=document.getElementById("message");
+		var xpos = parseInt(elem.style.left);
+        var ypos = parseInt(elem.style.top);
+       if(xpos == 200 && ypos ==100){
+        	return true;
+	    }
+	    if(xpos < 200){
+	        xpos++;
+	    }
+	    if(xpos > 200){
+	        xpos--;
+	    }
+	    if(ypos > 100){
+	        ypos++;
+	    }
+	    if(ypos < 100){
+	        ypos--;
+	    }
+	    elem.style.left = xpos +'px';
+	    elem.style.top = ypos +'px';
+	    //每隔十毫秒调用一次
+	    movement=setTimeout('moveMessage()',10);
+	}
+	/* moveMess()函数使得message元素以每次1像素的方式在浏览器窗口里移动。
+	  一旦这个元素的top和left属性同时等于100px和200px,这个函数就停止执行。
+	 */
+
+
+
+	//对函数进行抽象
+	function moveElement(elementId,final_x,final_y,interval){
+    if( !document.getElementById) return false;
+    if( !document.getElementById(elementId)) return false;
+    var elem = document.getElementById(elementId);
+    var xpos = parseInt(elem.style.left);
+    var ypos = parseInt(elem.style.top);
+    if(xpos == final_x && ypos == final_y){
+        return true;
+    }
+    if(xpos < final_x){
+        xpos++;
+    }
+    if(xpos > final_x){
+        xpos--;
+    }
+    if(ypos < final_y){
+        ypos++;
+    }
+    if(ypos > final_y){
+        ypos--;
+    }
+    elem.style.left = xpos +'px';
+    elem.style.top = ypos +'px';
+    var repeat="moveElement('"+elementId+"',"+final_x+","+final_y+","+interval+")";
+    movement=setTimeout(repeat,10);
+}
+
+
+ 	addLoadEvent(positionMessage);
+
+
+
+
+</script>	
+</html>
